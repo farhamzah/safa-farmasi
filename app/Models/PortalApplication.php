@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class PortalApplication extends Model
 {
@@ -69,11 +70,23 @@ class PortalApplication extends Model
 
     public function getThumbnailUrlAttribute(): ?string
     {
-        if (! $this->thumbnail_path || ! Storage::disk('public')->exists($this->thumbnail_path)) {
+        $thumbnailPath = $this->normalizeThumbnailPath($this->thumbnail_path);
+
+        if (! $thumbnailPath || ! Storage::disk('public')->exists($thumbnailPath)) {
             return null;
         }
 
-        return Storage::disk('public')->url($this->thumbnail_path);
+        return Storage::disk('public')->url($thumbnailPath);
+    }
+
+    public function setThumbnailPathAttribute(mixed $value): void
+    {
+        $this->attributes['thumbnail_path'] = $this->normalizeThumbnailPath($value);
+    }
+
+    public static function normalizeThumbnailPathValue(mixed $value): ?string
+    {
+        return (new self())->normalizeThumbnailPath($value);
     }
 
     public function getDisplayDescriptionAttribute(): ?string
@@ -107,5 +120,48 @@ class PortalApplication extends Model
             ->orderByDesc('is_featured')
             ->orderBy('sort_order')
             ->orderBy('name');
+    }
+
+    private function normalizeThumbnailPath(mixed $value): ?string
+    {
+        if (is_array($value)) {
+            $value = collect($value)
+                ->filter(fn (mixed $path): bool => filled($path))
+                ->last();
+        }
+
+        if (blank($value)) {
+            return null;
+        }
+
+        $path = str_replace('\\', '/', trim((string) $value));
+
+        if (Str::startsWith($path, ['http://', 'https://'])) {
+            $path = parse_url($path, PHP_URL_PATH) ?: '';
+        }
+
+        if (str_contains($path, 'livewire-tmp')) {
+            return null;
+        }
+
+        foreach ([storage_path('app/public'), public_path('storage')] as $prefix) {
+            $prefix = str_replace('\\', '/', rtrim($prefix, '\\/')).'/';
+
+            if (Str::startsWith($path, $prefix)) {
+                return ltrim(Str::after($path, $prefix), '/');
+            }
+        }
+
+        foreach (['storage/app/public/', 'public/storage/', '/storage/', 'storage/'] as $prefix) {
+            if (Str::startsWith($path, $prefix)) {
+                return ltrim(Str::after($path, $prefix), '/');
+            }
+        }
+
+        if (preg_match('/^[A-Za-z]:\//', $path) || Str::startsWith($path, '/')) {
+            return null;
+        }
+
+        return ltrim($path, '/');
     }
 }

@@ -108,5 +108,6 @@ class DatabaseSeeder extends Seeder
         );
 
         $this->call(LabPortalCardSeeder::class);
+        $this->call(TaPortalCardSeeder::class);
     }
 }

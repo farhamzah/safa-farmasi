@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\PortalApplications\Schemas;
 
+use App\Models\PortalApplication;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -70,11 +71,25 @@ class PortalApplicationForm
                             ->helperText('JPG, JPEG, PNG, atau WebP. Maksimal 2 MB.')
                             ->image()
                             ->imagePreviewHeight('160')
-                            ->acceptedFileTypes(['image/jpeg', 'image/jpg', 'image/png', 'image/webp'])
+                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                             ->maxSize(2048)
                             ->disk('public')
-                            ->directory('application-thumbnails')
-                            ->visibility('public'),
+                            ->directory('safa/applications/thumbnails')
+                            ->visibility('public')
+                            ->multiple(false)
+                            ->afterStateUpdated(function (FileUpload $component): void {
+                                $files = collect($component->getRawState())
+                                    ->filter(fn (mixed $file): bool => filled($file));
+
+                                if ($files->count() <= 1) {
+                                    return;
+                                }
+
+                                $component->rawState([
+                                    $files->keys()->last() => $files->last(),
+                                ]);
+                            })
+                            ->dehydrateStateUsing(fn (mixed $state): ?string => PortalApplication::normalizeThumbnailPathValue($state)),
                     ]),
                 Section::make('Akses dan Status')
                     ->schema([

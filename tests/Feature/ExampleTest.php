@@ -2,6 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Filament\Pages\ChangePassword;
+use App\Filament\Resources\PortalApplications\Pages\EditPortalApplication;
 use App\Models\Announcement;
 use App\Models\AppCategory;
 use App\Models\ApplicationClick;
@@ -9,6 +11,10 @@ use App\Models\PortalApplication;
 use App\Models\User;
 use App\Services\DuplicatePortalApplication;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
+use Livewire\Livewire;
 use Tests\TestCase;
 
 class ExampleTest extends TestCase
@@ -58,6 +64,173 @@ class ExampleTest extends TestCase
             ->assertSee('Kerja Praktek')
             ->assertSee(route('applications.go', $application))
             ->assertSee('Buka KP');
+    }
+
+    public function test_application_thumbnail_uses_public_storage_url_on_landing_page(): void
+    {
+        Storage::fake('public');
+        Storage::disk('public')->put('safa/applications/thumbnails/kp.png', 'thumbnail');
+
+        $category = AppCategory::query()->create([
+            'name' => 'Layanan Akademik',
+            'slug' => 'layanan-akademik',
+        ]);
+
+        $application = PortalApplication::query()->create([
+            'name' => 'Kerja Praktek',
+            'slug' => 'kerja-praktek-thumb',
+            'short_name' => 'KP',
+            'thumbnail_path' => 'safa/applications/thumbnails/kp.png',
+            'url' => 'https://safa.cloud/kerja-praktek',
+            'status' => 'active',
+        ]);
+
+        $application->categories()->attach($category);
+
+        $thumbnailUrl = $application->refresh()->thumbnail_url;
+
+        $this->assertNotNull($thumbnailUrl);
+        $this->assertStringContainsString('/storage/safa/applications/thumbnails/kp.png', $thumbnailUrl);
+
+        $this->get('/')
+            ->assertStatus(200)
+            ->assertSee('src="'.$thumbnailUrl.'"', false)
+            ->assertSee('alt="Kerja Praktek"', false);
+    }
+
+    public function test_application_thumbnail_falls_back_when_file_is_missing_or_path_is_temporary(): void
+    {
+        Storage::fake('public');
+
+        $missingFileApplication = PortalApplication::query()->create([
+            'name' => 'Kerja Praktek',
+            'slug' => 'kerja-praktek-missing-thumb',
+            'short_name' => 'KP',
+            'thumbnail_path' => 'safa/applications/thumbnails/missing.png',
+            'url' => 'https://safa.cloud/kerja-praktek',
+            'status' => 'active',
+        ]);
+
+        $temporaryPathApplication = PortalApplication::query()->create([
+            'name' => 'Upload Sementara',
+            'slug' => 'upload-sementara',
+            'short_name' => 'US',
+            'thumbnail_path' => 'livewire-tmp/temp-file.png',
+            'url' => 'https://safa.cloud/temp',
+            'status' => 'active',
+        ]);
+
+        $this->assertNull($missingFileApplication->thumbnail_url);
+        $this->assertNull($temporaryPathApplication->refresh()->thumbnail_path);
+        $this->assertNull($temporaryPathApplication->thumbnail_url);
+    }
+
+    public function test_application_thumbnail_path_is_normalized_before_save(): void
+    {
+        $application = PortalApplication::query()->create([
+            'name' => 'Kerja Praktek',
+            'slug' => 'kerja-praktek-normalized-thumb',
+            'short_name' => 'KP',
+            'thumbnail_path' => storage_path('app/public/safa/applications/thumbnails/kp.png'),
+            'url' => 'https://safa.cloud/kerja-praktek',
+            'status' => 'active',
+        ]);
+
+        $this->assertSame(
+            'safa/applications/thumbnails/kp.png',
+            $application->refresh()->thumbnail_path,
+        );
+    }
+
+    public function test_application_thumbnail_path_can_be_replaced_or_removed(): void
+    {
+        $application = PortalApplication::query()->create([
+            'name' => 'Kerja Praktek',
+            'slug' => 'kerja-praktek-replace-thumb',
+            'short_name' => 'KP',
+            'thumbnail_path' => 'safa/applications/thumbnails/old.png',
+            'url' => 'https://safa.cloud/kerja-praktek',
+            'status' => 'active',
+        ]);
+
+        $application->update([
+            'thumbnail_path' => [
+                'old-file-key' => 'safa/applications/thumbnails/old.png',
+                'new-file-key' => 'safa/applications/thumbnails/kp.png',
+            ],
+        ]);
+
+        $this->assertSame(
+            'safa/applications/thumbnails/kp.png',
+            $application->refresh()->thumbnail_path,
+        );
+
+        $application->update([
+            'thumbnail_path' => [],
+        ]);
+
+        $this->assertNull($application->refresh()->thumbnail_path);
+    }
+
+    public function test_edit_application_form_replaces_thumbnail_path(): void
+    {
+        Storage::fake('public');
+        Storage::disk('public')->put('safa/applications/thumbnails/old.png', 'old-thumbnail');
+
+        $admin = User::factory()->create([
+            'is_admin' => true,
+        ]);
+
+        $application = PortalApplication::query()->create([
+            'name' => 'Kerja Praktek',
+            'slug' => 'kerja-praktek-filament-thumb',
+            'short_name' => 'KP',
+            'thumbnail_path' => 'safa/applications/thumbnails/old.png',
+            'url' => 'https://safa.cloud/kerja-praktek',
+            'status' => 'active',
+            'short_description' => 'Pengajuan dan monitoring administrasi kerja praktek mahasiswa.',
+        ]);
+
+        Livewire::actingAs($admin)
+            ->test(EditPortalApplication::class, ['record' => $application->getKey()])
+            ->set('data.thumbnail_path.new-file-key', UploadedFile::fake()->image('KP.png')->size(1500))
+            ->call('save')
+            ->assertHasNoErrors();
+
+        $application->refresh();
+
+        $this->assertNotSame('safa/applications/thumbnails/old.png', $application->thumbnail_path);
+        $this->assertStringStartsWith('safa/applications/thumbnails/', $application->thumbnail_path);
+        $this->assertStringEndsWith('.png', $application->thumbnail_path);
+        Storage::disk('public')->assertExists($application->thumbnail_path);
+    }
+
+    public function test_edit_application_form_can_remove_thumbnail_path(): void
+    {
+        Storage::fake('public');
+        Storage::disk('public')->put('safa/applications/thumbnails/old.png', 'old-thumbnail');
+
+        $admin = User::factory()->create([
+            'is_admin' => true,
+        ]);
+
+        $application = PortalApplication::query()->create([
+            'name' => 'Kerja Praktek',
+            'slug' => 'kerja-praktek-remove-thumb',
+            'short_name' => 'KP',
+            'thumbnail_path' => 'safa/applications/thumbnails/old.png',
+            'url' => 'https://safa.cloud/kerja-praktek',
+            'status' => 'active',
+            'short_description' => 'Pengajuan dan monitoring administrasi kerja praktek mahasiswa.',
+        ]);
+
+        Livewire::actingAs($admin)
+            ->test(EditPortalApplication::class, ['record' => $application->getKey()])
+            ->set('data.thumbnail_path', [])
+            ->call('save')
+            ->assertHasNoErrors();
+
+        $this->assertNull($application->refresh()->thumbnail_path);
     }
 
     public function test_inactive_application_does_not_appear_on_landing_page(): void
@@ -306,7 +479,19 @@ class ExampleTest extends TestCase
 
         $this->get('/')
             ->assertStatus(200)
+            ->assertSee('href="#pengumuman"', false)
+            ->assertSee('id="pengumuman"', false)
+            ->assertSee('Pengumuman')
             ->assertSee('Pendaftaran dibuka');
+    }
+
+    public function test_landing_page_does_not_expose_admin_link(): void
+    {
+        $this->get('/')
+            ->assertStatus(200)
+            ->assertDontSee('href="/admin"', false)
+            ->assertDontSee('Masuk ke panel admin')
+            ->assertDontSee('>Admin<', false);
     }
 
     public function test_expired_announcement_does_not_appear_on_landing_page(): void
@@ -377,6 +562,41 @@ class ExampleTest extends TestCase
         $this->actingAs($user)->get('/admin/app-categories/create')->assertStatus(200);
         $this->actingAs($user)->get('/admin/announcements/create')->assertStatus(200);
         $this->actingAs($user)->get('/admin/landing-settings/create')->assertStatus(200);
+    }
+
+    public function test_admin_can_access_change_password_page_and_update_password(): void
+    {
+        $user = User::factory()->create([
+            'is_admin' => true,
+        ]);
+
+        $this->actingAs($user)
+            ->get('/admin/ubah-password')
+            ->assertStatus(200)
+            ->assertSee('Ubah Password');
+
+        Livewire::actingAs($user)
+            ->test(ChangePassword::class)
+            ->set('data.current_password', 'password')
+            ->set('data.password', 'password-baru')
+            ->set('data.password_confirmation', 'password-baru')
+            ->call('save')
+            ->assertHasNoErrors();
+
+        $this->assertTrue(Hash::check('password-baru', $user->refresh()->password));
+    }
+
+    public function test_change_password_page_requires_admin_login(): void
+    {
+        $nonAdmin = User::factory()->create([
+            'is_admin' => false,
+        ]);
+
+        $this->get('/admin/ubah-password')->assertRedirect('/admin/login');
+
+        $this->actingAs($nonAdmin)
+            ->get('/admin/ubah-password')
+            ->assertForbidden();
     }
 
     public function test_duplicate_application_creates_unique_slug_and_copies_categories(): void
