@@ -1,0 +1,105 @@
+@import '../../../../vendor/filament/filament/resources/css/theme.css';
+
+@source '../../../../app/Filament/**/*';
+@source '../../../../resources/views/filament/**/*';
+
+:root {
+    --safa-ink: #071312;
+    --safa-panel: rgba(255, 255, 255, 0.94);
+    --safa-muted: #f3faf7;
+    --safa-border: rgba(15, 118, 110, 0.14);
+}
+
+.fi-body {
+    background:
+        radial-gradient(circle at top left, rgba(20, 184, 166, 0.16), transparent 32rem),
+        linear-gradient(135deg, #f8fffc 0%, #f6faf9 42%, #f8fafc 100%);
+}
+
+.fi-sidebar {
+    border-right: 1px solid var(--safa-border);
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(243, 250, 247, 0.92)),
+        #ffffff;
+    box-shadow: 12px 0 32px rgba(15, 23, 42, 0.04);
+}
+
+.fi-topbar nav {
+    border-bottom: 1px solid rgba(15, 118, 110, 0.12);
+    background: rgba(255, 255, 255, 0.86);
+    backdrop-filter: blur(18px);
+}
+
+.fi-main {
+    padding-top: 1.25rem;
+}
+
+.fi-header-heading {
+    color: var(--safa-ink);
+    font-weight: 900;
+    letter-spacing: 0;
+}
+
+.fi-section,
+.fi-ta,
+.fi-fo-component-ctn,
+.fi-wi-stats-overview-stat {
+    border-color: rgba(15, 118, 110, 0.12);
+    background: var(--safa-panel);
+    box-shadow: 0 16px 40px rgba(15, 23, 42, 0.06);
+}
+
+.fi-wi-stats-overview-stat {
+    overflow: hidden;
+    border-radius: 1rem;
+}
+
+.fi-sidebar-item-active a,
+.fi-sidebar-item a:hover {
+    background: #ecfdf5;
+    color: #0f766e;
+}
+
+.fi-btn {
+    border-radius: 0.8rem;
+    font-weight: 800;
+}
+
+.fi-input-wrp,
+.fi-select-input,
+.fi-ta-search-field {
+    border-radius: 0.9rem;
+}
+
+.fi-ta-header,
+.fi-section-header {
+    border-color: rgba(15, 118, 110, 0.1);
+}
+
+.fi-simple-layout {
+    background:
+        radial-gradient(circle at 20% 20%, rgba(16, 185, 129, 0.18), transparent 24rem),
+        linear-gradient(135deg, #f8fffc 0%, #eefbf6 45%, #f8fafc 100%);
+}
+
+.fi-simple-main {
+    border: 1px solid rgba(15, 118, 110, 0.12);
+    background: rgba(255, 255, 255, 0.92);
+    box-shadow: 0 24px 70px rgba(15, 23, 42, 0.14);
+    backdrop-filter: blur(18px);
+}
+
+.safa-admin-hero {
+    background:
+        radial-gradient(circle at 88% 18%, rgba(45, 212, 191, 0.22), transparent 16rem),
+        radial-gradient(circle at 18% 90%, rgba(56, 189, 248, 0.12), transparent 18rem),
+        #061413;
+}
+
+.safa-admin-section .fi-section-content {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(248, 250, 252, 0.96));
+}
+
+.safa-admin-action {
+    min-height: 7.25rem;
+}

@@ -18,7 +18,7 @@ class AppCategoryResource extends Resource
 {
     protected static ?string $model = AppCategory::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedSquares2x2;
 
     protected static ?string $modelLabel = 'Kategori';
 

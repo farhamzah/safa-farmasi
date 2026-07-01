@@ -18,7 +18,7 @@ class PortalApplicationResource extends Resource
 {
     protected static ?string $model = PortalApplication::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedWindow;
 
     protected static ?string $modelLabel = 'Aplikasi';
 
