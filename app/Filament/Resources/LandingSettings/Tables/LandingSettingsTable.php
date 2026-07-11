@@ -46,6 +46,10 @@ class LandingSettingsTable
                     ->options([
                         'general' => 'General',
                         'hero' => 'Hero',
+                        'values' => 'Values',
+                        'services' => 'Services',
+                        'about' => 'About',
+                        'news' => 'News',
                         'contact' => 'Contact',
                         'footer' => 'Footer',
                     ]),

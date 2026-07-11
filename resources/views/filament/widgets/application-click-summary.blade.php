@@ -10,7 +10,7 @@
 
         @php
             $topApplications = $this->getTopApplications();
-            $maxClicks = max(1, (int) $topApplications->max('total_clicks'));
+            $maxClicks = max(1, (int) ($topApplications->max('total_clicks') ?? 0));
         @endphp
 
         @if ($topApplications->isEmpty())

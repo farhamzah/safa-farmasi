@@ -47,12 +47,33 @@ class LandingPageController extends Controller
             ->ordered()
             ->get();
 
+        $showcaseApplications = PortalApplication::query()
+            ->with('categories')
+            ->visible()
+            ->ordered()
+            ->get();
+
+        $programApplications = PortalApplication::query()
+            ->with('categories')
+            ->visible()
+            ->whereHas('categories', function (Builder $query): void {
+                $query->where('slug', 'program-studi')->where('is_active', true);
+            })
+            ->ordered()
+            ->get();
+
+        if ($programApplications->isEmpty()) {
+            $programApplications = $showcaseApplications->take(2);
+        }
+
         return view('landing', [
             'settings' => $landingSettings->all(),
             'search' => $search,
             'selectedCategory' => $selectedCategory,
             'categories' => $categories,
             'applications' => $applications,
+            'showcaseApplications' => $showcaseApplications,
+            'programApplications' => $programApplications,
             'announcements' => Announcement::query()
                 ->currentlyVisible()
                 ->latest()

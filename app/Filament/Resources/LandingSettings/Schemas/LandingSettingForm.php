@@ -23,6 +23,10 @@ class LandingSettingForm
                             ->options([
                                 'general' => 'General',
                                 'hero' => 'Hero',
+                                'values' => 'Values',
+                                'services' => 'Services',
+                                'about' => 'About',
+                                'news' => 'News',
                                 'contact' => 'Contact',
                                 'footer' => 'Footer',
                             ])
@@ -42,7 +46,7 @@ class LandingSettingForm
                             ->required(),
                         TextInput::make('key')
                             ->label('Key')
-                            ->helperText('Contoh: site_name, site_subtitle, site_logo, site_favicon, hero_title, hero_description, contact_email, contact_whatsapp, footer_text.')
+                            ->helperText('Contoh: site_name, hero_title, hero_image_url, value_1_title, services_title, about_title, news_title, contact_email, footer_text.')
                             ->required()
                             ->unique(ignoreRecord: true)
                             ->maxLength(255),
