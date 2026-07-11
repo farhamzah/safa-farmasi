@@ -60,6 +60,7 @@ class LandingSettingsTable
                         'email' => 'Email',
                         'url' => 'URL',
                         'phone' => 'Phone',
+                        'image' => 'Image',
                     ]),
             ])
             ->recordActions([

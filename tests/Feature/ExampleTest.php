@@ -7,6 +7,7 @@ use App\Filament\Resources\PortalApplications\Pages\EditPortalApplication;
 use App\Models\Announcement;
 use App\Models\AppCategory;
 use App\Models\ApplicationClick;
+use App\Models\LandingSetting;
 use App\Models\PortalApplication;
 use App\Models\User;
 use App\Services\DuplicatePortalApplication;
@@ -40,6 +41,25 @@ class ExampleTest extends TestCase
             ->assertSee('<meta property="og:description"', false)
             ->assertSee('<meta property="og:type" content="website">', false)
             ->assertSee('<meta name="theme-color" content="#0f766e">', false);
+    }
+
+    public function test_landing_page_uses_public_storage_hero_image_setting(): void
+    {
+        Storage::fake('public');
+        Storage::disk('public')->put('safa/landing/hero.webp', 'hero');
+
+        LandingSetting::query()->updateOrCreate([
+            'key' => 'hero_image_url',
+        ], [
+            'group' => 'hero',
+            'type' => 'image',
+            'value' => 'safa/landing/hero.webp',
+        ]);
+
+        $this->get('/')
+            ->assertStatus(200)
+            ->assertSee('src="/storage/safa/landing/hero.webp"', false)
+            ->assertSee('alt="Farmasi UBP"', false);
     }
 
     public function test_active_application_appears_on_landing_page(): void

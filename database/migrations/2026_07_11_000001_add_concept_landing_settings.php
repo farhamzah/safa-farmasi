@@ -12,12 +12,12 @@ return new class extends Migration
     {
         $settings = [
             ['hero', 'text', 'hero_kicker', 'Fakultas Farmasi Universitas Buana Perjuangan Karawang'],
-            ['hero', 'text', 'hero_title', 'Farmasi UBP Karawang'],
-            ['hero', 'text', 'hero_highlight', 'Satu Akses Digital'],
-            ['hero', 'textarea', 'hero_description', 'Portal resmi Fakultas Farmasi UBP Karawang untuk membuka layanan akademik, administrasi, program studi, laboratorium, dan bantuan akses dalam satu halaman.'],
-            ['hero', 'url', 'hero_image_url', null],
-            ['hero', 'text', 'hero_primary_button', 'Kenali Layanan'],
-            ['hero', 'text', 'hero_secondary_button', 'Lihat Aplikasi'],
+            ['hero', 'text', 'hero_title', 'Farmasi UBP'],
+            ['hero', 'text', 'hero_highlight', 'Karawang'],
+            ['hero', 'textarea', 'hero_description', 'Mewujudkan pendidikan farmasi yang berwawasan kebangsaan, unggul, inovatif, dan berdaya saing global melalui pengembangan pharmapreneurship dan Evidence-Based Medicine.'],
+            ['hero', 'image', 'hero_image_url', null],
+            ['hero', 'text', 'hero_primary_button', 'Kenali Kami Lebih Lanjut'],
+            ['hero', 'text', 'hero_secondary_button', 'Program Studi'],
             ['values', 'text', 'value_1_title', 'Berwawasan Kebangsaan'],
             ['values', 'text', 'value_2_title', 'Unggul & Inovatif'],
             ['values', 'text', 'value_3_title', 'Pharmapreneurship'],

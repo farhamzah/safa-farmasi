@@ -9,9 +9,23 @@
             return null;
         }
 
-        return \Illuminate\Support\Str::startsWith($path, ['http://', 'https://'])
-            ? $path
-            : url($path);
+        $path = str_replace('\\', '/', trim($path));
+
+        if (\Illuminate\Support\Str::startsWith($path, ['http://', 'https://'])) {
+            return $path;
+        }
+
+        if (\Illuminate\Support\Str::startsWith($path, ['/storage/', 'storage/'])) {
+            return url('/'.ltrim($path, '/'));
+        }
+
+        $publicPath = ltrim($path, '/');
+
+        if (\Illuminate\Support\Facades\Storage::disk('public')->exists($publicPath)) {
+            return \Illuminate\Support\Facades\Storage::disk('public')->url($publicPath);
+        }
+
+        return url($path);
     };
     $siteLogoUrl = $absoluteAsset($siteLogo);
     $siteFaviconUrl = $absoluteAsset($siteFavicon);
@@ -90,15 +104,13 @@
 
     <main id="beranda">
         <section class="relative overflow-hidden bg-white">
-            <div class="absolute inset-0 bg-[radial-gradient(circle_at_78%_18%,rgba(125,211,252,0.38),transparent_26rem),linear-gradient(90deg,#ffffff_0%,#eff8ff_54%,#dff2ff_100%)]"></div>
-            @if ($heroImageUrl)
-                <div class="absolute inset-y-0 right-0 hidden w-[56%] bg-cover bg-center opacity-95 lg:block" style="background-image: linear-gradient(90deg, rgba(255,255,255,0.96) 0%, rgba(255,255,255,0.46) 28%, rgba(255,255,255,0.08) 100%), url('{{ $heroImageUrl }}');"></div>
-            @endif
+            <div class="absolute inset-0 bg-[radial-gradient(circle_at_76%_14%,rgba(186,230,253,0.68),transparent_25rem),linear-gradient(90deg,#ffffff_0%,#f5fbff_50%,#e0f2fe_100%)]"></div>
+            <div class="absolute bottom-0 left-0 h-24 w-1/2 rounded-tr-full bg-amber-400/90"></div>
 
-            <div class="relative mx-auto grid min-h-[34rem] max-w-7xl items-center gap-10 px-5 py-12 sm:px-8 lg:grid-cols-[1fr_0.92fr] lg:px-10 lg:py-20">
+            <div class="relative mx-auto grid min-h-[35rem] max-w-7xl items-center gap-8 px-5 pb-16 pt-10 sm:px-8 lg:grid-cols-[0.88fr_1fr] lg:px-10 lg:pb-20 lg:pt-14">
                 <div class="max-w-3xl">
                     <p class="text-sm font-black uppercase tracking-wide text-blue-900">{{ setting('hero_kicker') }}</p>
-                    <h1 class="mt-5 text-5xl font-black leading-[0.98] tracking-normal text-blue-950 sm:text-6xl lg:text-7xl">
+                    <h1 class="mt-5 text-5xl font-black uppercase leading-[0.95] tracking-normal text-blue-950 sm:text-6xl lg:text-7xl">
                         {{ setting('hero_title') }}
                         <span class="block text-amber-400">{{ setting('hero_highlight') }}</span>
                     </h1>
@@ -118,39 +130,47 @@
                     </div>
                 </div>
 
-                <div class="relative">
-                    <div class="rounded-[2rem] border border-white/80 bg-white/75 p-4 shadow-2xl shadow-blue-950/10 backdrop-blur">
-                        <div class="rounded-[1.5rem] bg-blue-950 p-5 text-white">
-                            <div class="flex items-center justify-between gap-4 border-b border-white/10 pb-4">
-                                <div>
-                                    <p class="text-xs font-black uppercase tracking-wide text-amber-300">Portal Layanan</p>
-                                    <p class="mt-1 text-lg font-black">Akses cepat fakultas</p>
+                <div class="relative min-h-[23rem] lg:min-h-[31rem]">
+                    @if ($heroImageUrl)
+                        <div class="absolute inset-0 overflow-hidden rounded-[2rem] shadow-2xl shadow-blue-950/12 ring-1 ring-white/80 lg:-right-10 lg:rounded-l-[2.5rem] lg:rounded-r-none">
+                            <img src="{{ $heroImageUrl }}" alt="{{ setting('hero_title') }}" class="h-full w-full object-cover object-center">
+                            <div class="absolute inset-0 bg-[linear-gradient(90deg,rgba(255,255,255,0.78)_0%,rgba(255,255,255,0.28)_31%,rgba(255,255,255,0)_58%)]"></div>
+                            <div class="absolute bottom-0 left-0 right-0 h-28 bg-gradient-to-t from-white/75 to-transparent"></div>
+                        </div>
+                    @else
+                        <div class="rounded-[2rem] border border-white/80 bg-white/75 p-4 shadow-2xl shadow-blue-950/10 backdrop-blur">
+                            <div class="rounded-[1.5rem] bg-blue-950 p-5 text-white">
+                                <div class="flex items-center justify-between gap-4 border-b border-white/10 pb-4">
+                                    <div>
+                                        <p class="text-xs font-black uppercase tracking-wide text-amber-300">Portal Layanan</p>
+                                        <p class="mt-1 text-lg font-black">Akses cepat fakultas</p>
+                                    </div>
+                                    <span class="rounded-full bg-emerald-400/15 px-3 py-1 text-xs font-black text-emerald-200 ring-1 ring-emerald-300/30">Online</span>
                                 </div>
-                                <span class="rounded-full bg-emerald-400/15 px-3 py-1 text-xs font-black text-emerald-200 ring-1 ring-emerald-300/30">Online</span>
-                            </div>
-                            <div class="mt-4 grid gap-3">
-                                @forelse ($heroApplications as $application)
-                                    <div class="flex items-center gap-3 rounded-2xl bg-white/10 p-3 ring-1 ring-white/10">
-                                        <span class="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white text-sm font-black text-blue-950">
-                                            @if ($application->thumbnail_url)
-                                                <img src="{{ $application->thumbnail_url }}" alt="{{ $application->name }}" class="h-full w-full object-cover">
-                                            @else
-                                                {{ str($application->short_name ?: $application->name)->substr(0, 2)->upper() }}
-                                            @endif
-                                        </span>
-                                        <div class="min-w-0">
-                                            <p class="truncate text-sm font-black text-white">{{ $application->name }}</p>
-                                            <p class="mt-0.5 truncate text-xs text-slate-300">{{ $application->categories->pluck('name')->first() ?: 'Layanan' }}</p>
+                                <div class="mt-4 grid gap-3">
+                                    @forelse ($heroApplications as $application)
+                                        <div class="flex items-center gap-3 rounded-2xl bg-white/10 p-3 ring-1 ring-white/10">
+                                            <span class="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white text-sm font-black text-blue-950">
+                                                @if ($application->thumbnail_url)
+                                                    <img src="{{ $application->thumbnail_url }}" alt="{{ $application->name }}" class="h-full w-full object-cover">
+                                                @else
+                                                    {{ str($application->short_name ?: $application->name)->substr(0, 2)->upper() }}
+                                                @endif
+                                            </span>
+                                            <div class="min-w-0">
+                                                <p class="truncate text-sm font-black text-white">{{ $application->name }}</p>
+                                                <p class="mt-0.5 truncate text-xs text-slate-300">{{ $application->categories->pluck('name')->first() ?: 'Layanan' }}</p>
+                                            </div>
                                         </div>
-                                    </div>
-                                @empty
-                                    <div class="rounded-2xl border border-dashed border-white/20 p-5 text-sm text-slate-300">
-                                        Layanan akan tampil di sini setelah ditambahkan admin.
-                                    </div>
-                                @endforelse
+                                    @empty
+                                        <div class="rounded-2xl border border-dashed border-white/20 p-5 text-sm text-slate-300">
+                                            Layanan akan tampil di sini setelah ditambahkan admin.
+                                        </div>
+                                    @endforelse
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    @endif
                 </div>
             </div>
 

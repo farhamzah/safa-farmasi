@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class LandingSetting extends Model
 {
@@ -61,5 +62,48 @@ class LandingSetting extends Model
         }
 
         return Storage::disk('public')->url($this->logo_path);
+    }
+
+    public static function normalizePublicAssetPathValue(mixed $value): ?string
+    {
+        if (is_array($value)) {
+            $value = collect($value)
+                ->filter(fn (mixed $path): bool => filled($path))
+                ->last();
+        }
+
+        if (blank($value)) {
+            return null;
+        }
+
+        $path = str_replace('\\', '/', trim((string) $value));
+
+        if (Str::startsWith($path, ['http://', 'https://'])) {
+            return $path;
+        }
+
+        if (str_contains($path, 'livewire-tmp')) {
+            return null;
+        }
+
+        foreach ([storage_path('app/public'), public_path('storage'), public_path()] as $prefix) {
+            $prefix = str_replace('\\', '/', rtrim($prefix, '\\/')).'/';
+
+            if (Str::startsWith($path, $prefix)) {
+                return ltrim(Str::after($path, $prefix), '/');
+            }
+        }
+
+        foreach (['storage/app/public/', 'public/storage/', '/storage/', 'storage/'] as $prefix) {
+            if (Str::startsWith($path, $prefix)) {
+                return ltrim(Str::after($path, $prefix), '/');
+            }
+        }
+
+        if (preg_match('/^[A-Za-z]:\//', $path)) {
+            return null;
+        }
+
+        return ltrim($path, '/');
     }
 }
