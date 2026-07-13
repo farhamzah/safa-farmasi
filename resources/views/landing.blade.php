@@ -29,9 +29,8 @@
     };
     $siteLogoUrl = $absoluteAsset($siteLogo);
     $siteFaviconUrl = $absoluteAsset($siteFavicon);
-    $heroImageUrl = $absoluteAsset(setting('hero_image_url'));
+    $heroImageUrl = $absoluteAsset(setting('hero_image_url', '/images/hero-farmasi-default.svg'));
     $showcase = ($showcaseApplications ?? $applications)->take(6);
-    $heroApplications = ($showcaseApplications ?? $applications)->take(4);
     $programCards = ($programApplications ?? collect())->take(2);
     $primaryApplication = ($showcaseApplications ?? $applications)->first(fn ($application) => $application->is_linkable);
     $activeApplicationCount = ($showcaseApplications ?? $applications)
@@ -96,8 +95,8 @@
                 <a href="#kontak" class="pb-2 transition hover:text-amber-600">Kontak</a>
             </div>
 
-            <a href="#aplikasi" class="hidden rounded-full border border-blue-900 px-5 py-2 text-sm font-black text-blue-950 transition hover:bg-blue-950 hover:text-white sm:inline-flex">
-                Portal
+            <a href="#aplikasi" class="inline-flex rounded-full border border-blue-900 px-4 py-2 text-xs font-black text-blue-950 transition hover:bg-blue-950 hover:text-white sm:px-5 sm:text-sm">
+                Aplikasi
             </a>
         </nav>
     </header>
@@ -107,10 +106,10 @@
             <div class="absolute inset-0 bg-[radial-gradient(circle_at_76%_14%,rgba(186,230,253,0.68),transparent_25rem),linear-gradient(90deg,#ffffff_0%,#f5fbff_50%,#e0f2fe_100%)]"></div>
             <div class="absolute bottom-0 left-0 h-24 w-1/2 rounded-tr-full bg-amber-400/90"></div>
 
-            <div class="relative mx-auto grid min-h-[35rem] max-w-7xl items-center gap-8 px-5 pb-16 pt-10 sm:px-8 lg:grid-cols-[0.88fr_1fr] lg:px-10 lg:pb-20 lg:pt-14">
+            <div class="relative mx-auto grid min-h-[35rem] max-w-7xl items-center gap-8 px-5 pb-12 pt-10 sm:px-8 lg:grid-cols-[0.88fr_1fr] lg:px-10 lg:pb-20 lg:pt-14">
                 <div class="max-w-3xl">
                     <p class="text-sm font-black uppercase tracking-wide text-blue-900">{{ setting('hero_kicker') }}</p>
-                    <h1 class="mt-5 text-5xl font-black uppercase leading-[0.95] tracking-normal text-blue-950 sm:text-6xl lg:text-7xl">
+                    <h1 class="mt-5 break-words text-4xl font-black uppercase leading-[0.98] tracking-normal text-blue-950 sm:text-6xl lg:text-7xl">
                         {{ setting('hero_title') }}
                         <span class="block text-amber-400">{{ setting('hero_highlight') }}</span>
                     </h1>
@@ -119,58 +118,23 @@
                     </p>
 
                     <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
-                        <a href="#layanan" class="inline-flex min-h-12 items-center justify-center gap-3 rounded-full bg-blue-950 px-6 text-sm font-black text-white shadow-xl shadow-blue-950/20 transition hover:-translate-y-0.5 hover:bg-blue-900">
+                        <a href="#layanan" class="inline-flex min-h-12 w-full items-center justify-center gap-3 rounded-full bg-blue-950 px-6 text-sm font-black text-white shadow-xl shadow-blue-950/20 transition hover:-translate-y-0.5 hover:bg-blue-900 sm:w-auto">
                             {{ setting('hero_primary_button') }}
                             <span class="flex h-8 w-8 items-center justify-center rounded-full bg-white text-blue-950">-></span>
                         </a>
-                        <a href="#aplikasi" class="inline-flex min-h-12 items-center justify-center gap-3 rounded-full border border-blue-950 bg-white/70 px-6 text-sm font-black text-blue-950 transition hover:-translate-y-0.5 hover:bg-white">
+                        <a href="#aplikasi" class="inline-flex min-h-12 w-full items-center justify-center gap-3 rounded-full border border-blue-950 bg-white/70 px-6 text-sm font-black text-blue-950 transition hover:-translate-y-0.5 hover:bg-white sm:w-auto">
                             {{ setting('hero_secondary_button') }}
                             <span>-></span>
                         </a>
                     </div>
                 </div>
 
-                <div class="relative min-h-[23rem] lg:min-h-[31rem]">
-                    @if ($heroImageUrl)
-                        <div class="absolute inset-0 overflow-hidden rounded-[2rem] shadow-2xl shadow-blue-950/12 ring-1 ring-white/80 lg:-right-10 lg:rounded-l-[2.5rem] lg:rounded-r-none">
-                            <img src="{{ $heroImageUrl }}" alt="{{ setting('hero_title') }}" class="h-full w-full object-cover object-center">
-                            <div class="absolute inset-0 bg-[linear-gradient(90deg,rgba(255,255,255,0.78)_0%,rgba(255,255,255,0.28)_31%,rgba(255,255,255,0)_58%)]"></div>
-                            <div class="absolute bottom-0 left-0 right-0 h-28 bg-gradient-to-t from-white/75 to-transparent"></div>
-                        </div>
-                    @else
-                        <div class="rounded-[2rem] border border-white/80 bg-white/75 p-4 shadow-2xl shadow-blue-950/10 backdrop-blur">
-                            <div class="rounded-[1.5rem] bg-blue-950 p-5 text-white">
-                                <div class="flex items-center justify-between gap-4 border-b border-white/10 pb-4">
-                                    <div>
-                                        <p class="text-xs font-black uppercase tracking-wide text-amber-300">Portal Layanan</p>
-                                        <p class="mt-1 text-lg font-black">Akses cepat fakultas</p>
-                                    </div>
-                                    <span class="rounded-full bg-emerald-400/15 px-3 py-1 text-xs font-black text-emerald-200 ring-1 ring-emerald-300/30">Online</span>
-                                </div>
-                                <div class="mt-4 grid gap-3">
-                                    @forelse ($heroApplications as $application)
-                                        <div class="flex items-center gap-3 rounded-2xl bg-white/10 p-3 ring-1 ring-white/10">
-                                            <span class="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white text-sm font-black text-blue-950">
-                                                @if ($application->thumbnail_url)
-                                                    <img src="{{ $application->thumbnail_url }}" alt="{{ $application->name }}" class="h-full w-full object-cover">
-                                                @else
-                                                    {{ str($application->short_name ?: $application->name)->substr(0, 2)->upper() }}
-                                                @endif
-                                            </span>
-                                            <div class="min-w-0">
-                                                <p class="truncate text-sm font-black text-white">{{ $application->name }}</p>
-                                                <p class="mt-0.5 truncate text-xs text-slate-300">{{ $application->categories->pluck('name')->first() ?: 'Layanan' }}</p>
-                                            </div>
-                                        </div>
-                                    @empty
-                                        <div class="rounded-2xl border border-dashed border-white/20 p-5 text-sm text-slate-300">
-                                            Layanan akan tampil di sini setelah ditambahkan admin.
-                                        </div>
-                                    @endforelse
-                                </div>
-                            </div>
-                        </div>
-                    @endif
+                <div class="pointer-events-none relative min-h-[18rem] select-none sm:min-h-[23rem] lg:min-h-[31rem]" aria-label="Visual Fakultas Farmasi UBP">
+                    <div class="absolute inset-0 overflow-hidden rounded-[2rem] shadow-2xl shadow-blue-950/12 ring-1 ring-white/80 lg:-right-10 lg:rounded-l-[2.5rem] lg:rounded-r-none">
+                        <img src="{{ $heroImageUrl }}" alt="{{ setting('hero_title') }}" class="h-full w-full object-cover object-center">
+                        <div class="absolute inset-0 bg-[linear-gradient(90deg,rgba(255,255,255,0.78)_0%,rgba(255,255,255,0.24)_31%,rgba(255,255,255,0)_58%)]"></div>
+                        <div class="absolute bottom-0 left-0 right-0 h-28 bg-gradient-to-t from-white/60 to-transparent"></div>
+                    </div>
                 </div>
             </div>
 

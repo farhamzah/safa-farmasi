@@ -62,6 +62,15 @@ class ExampleTest extends TestCase
             ->assertSee('alt="Farmasi UBP"', false);
     }
 
+    public function test_landing_hero_default_visual_is_not_a_service_card(): void
+    {
+        $this->get('/')
+            ->assertStatus(200)
+            ->assertDontSee('Portal Layanan')
+            ->assertDontSee('Akses cepat fakultas')
+            ->assertDontSee('Upload gambar kefarmasian');
+    }
+
     public function test_active_application_appears_on_landing_page(): void
     {
         $category = AppCategory::query()->create([

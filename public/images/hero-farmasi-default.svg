@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 820" role="img" aria-labelledby="title desc">
+    <title id="title">Ilustrasi kefarmasian</title>
+    <desc id="desc">Ilustrasi laboratorium farmasi dengan labu, kapsul, dan simbol layanan kesehatan.</desc>
+    <defs>
+        <linearGradient id="sky" x1="0" x2="1" y1="0" y2="1">
+            <stop offset="0" stop-color="#f8fcff"/>
+            <stop offset=".55" stop-color="#dff3ff"/>
+            <stop offset="1" stop-color="#b9e4ff"/>
+        </linearGradient>
+        <linearGradient id="navy" x1="0" x2="1" y1=".1" y2="1">
+            <stop offset="0" stop-color="#0f2c67"/>
+            <stop offset="1" stop-color="#071a3d"/>
+        </linearGradient>
+        <linearGradient id="amber" x1="0" x2="1">
+            <stop offset="0" stop-color="#f8c331"/>
+            <stop offset="1" stop-color="#ffb703"/>
+        </linearGradient>
+        <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow dx="0" dy="24" stdDeviation="24" flood-color="#0b2556" flood-opacity=".18"/>
+        </filter>
+        <filter id="glow" x="-60%" y="-60%" width="220%" height="220%">
+            <feGaussianBlur stdDeviation="18" result="blur"/>
+            <feMerge>
+                <feMergeNode in="blur"/>
+                <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+        </filter>
+    </defs>
+
+    <rect width="1200" height="820" fill="url(#sky)"/>
+    <circle cx="1000" cy="168" r="92" fill="url(#amber)" filter="url(#glow)" opacity=".9"/>
+    <circle cx="112" cy="142" r="170" fill="#ffffff" opacity=".58"/>
+    <circle cx="980" cy="760" r="410" fill="#0c2a61" opacity=".98"/>
+    <circle cx="875" cy="710" r="260" fill="#ffffff" opacity=".08" stroke="#ffffff" stroke-opacity=".18" stroke-width="2"/>
+
+    <g filter="url(#softShadow)">
+        <rect x="100" y="540" width="980" height="156" rx="40" fill="#ffffff" opacity=".52"/>
+        <rect x="100" y="540" width="980" height="156" rx="40" fill="#102b62" opacity=".24"/>
+    </g>
+
+    <g transform="translate(166 136)" filter="url(#softShadow)">
+        <rect x="0" y="0" width="372" height="432" rx="40" fill="#ffffff" opacity=".94"/>
+        <rect x="38" y="44" width="296" height="112" rx="28" fill="#eaf7ff"/>
+        <path d="M122 198h128v58c0 42 58 86 58 138 0 58-48 96-122 96S64 452 64 394c0-52 58-96 58-138v-58Z" fill="#f8fcff" stroke="#0f2c67" stroke-width="14" stroke-linejoin="round"/>
+        <path d="M105 342c44-24 105 20 162-7 20 65-24 116-81 116-58 0-94-39-81-109Z" fill="#45c6d7" opacity=".78"/>
+        <path d="M145 186h82" stroke="#0f2c67" stroke-width="16" stroke-linecap="round"/>
+        <circle cx="284" cy="222" r="18" fill="#ffbf12"/>
+        <circle cx="86" cy="114" r="22" fill="#22c6a4"/>
+        <path d="M258 84h42v42m-21-21h42" stroke="#0f2c67" stroke-width="14" stroke-linecap="round"/>
+    </g>
+
+    <g transform="translate(606 102)">
+        <path d="M152 94c88-48 198 22 202 124 4 110-108 152-108 262H82c0-88-70-124-70-222C12 176 70 124 152 94Z" fill="#ffffff" opacity=".9" filter="url(#softShadow)"/>
+        <path d="M182 90c58 0 102 42 102 96 0 62-48 96-106 96-66 0-112-36-112-96 0-54 48-96 116-96Z" fill="#18234a"/>
+        <path d="M106 252c36 36 112 44 160 6v222H106V252Z" fill="#ffffff"/>
+        <path d="M106 284c58 44 116 40 160 0v58c-38 34-118 36-160 0v-58Z" fill="#d6eefb"/>
+        <path d="M74 498h230l-30 128H104L74 498Z" fill="url(#navy)"/>
+        <path d="M146 520h88v74h-88z" fill="#ffffff" opacity=".94"/>
+        <path d="M190 536v42m-21-21h42" stroke="#ffbf12" stroke-width="12" stroke-linecap="round"/>
+    </g>
+
+    <g transform="translate(786 388)" filter="url(#softShadow)">
+        <rect x="0" y="0" width="236" height="88" rx="44" fill="#ffffff"/>
+        <rect x="18" y="18" width="92" height="52" rx="26" fill="#0f2c67"/>
+        <rect x="126" y="18" width="92" height="52" rx="26" fill="#ffbf12"/>
+    </g>
+
+    <g transform="translate(900 520)" opacity=".9">
+        <circle cx="54" cy="54" r="54" fill="#ffffff" opacity=".92"/>
+        <path d="M54 24v60M24 54h60" stroke="#0f2c67" stroke-width="16" stroke-linecap="round"/>
+    </g>
+</svg>

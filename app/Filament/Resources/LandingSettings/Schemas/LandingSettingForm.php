@@ -67,7 +67,7 @@ class LandingSettingForm
                             ->maxLength(255),
                         FileUpload::make('value')
                             ->label('Gambar')
-                            ->helperText('Untuk hero_image_url. Gunakan JPG, PNG, atau WebP. Maksimal 4 MB.')
+                            ->helperText('Untuk hero_image_url: gambar hero bagian kanan atas landing. Gunakan JPG, PNG, atau WebP. Maksimal 4 MB.')
                             ->visible(fn (Get $get): bool => $get('type') === 'image')
                             ->dehydrated(fn (Get $get): bool => $get('type') === 'image')
                             ->image()
