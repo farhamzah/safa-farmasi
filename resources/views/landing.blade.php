@@ -29,7 +29,7 @@
     };
     $siteLogoUrl = $absoluteAsset($siteLogo);
     $siteFaviconUrl = $absoluteAsset($siteFavicon);
-    $heroImageUrl = $absoluteAsset(setting('hero_image_url', '/images/hero-farmasi-default.svg'));
+    $heroImageUrl = $absoluteAsset(setting('hero_image_url', '/images/hero-farmasi-lab.webp'));
     $showcase = ($showcaseApplications ?? $applications)->take(6);
     $programCards = ($programApplications ?? collect())->take(2);
     $primaryApplication = ($showcaseApplications ?? $applications)->first(fn ($application) => $application->is_linkable);

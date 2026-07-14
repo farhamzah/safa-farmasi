@@ -66,6 +66,7 @@ class ExampleTest extends TestCase
     {
         $this->get('/')
             ->assertStatus(200)
+            ->assertSee('/images/hero-farmasi-lab.webp', false)
             ->assertDontSee('Portal Layanan')
             ->assertDontSee('Akses cepat fakultas')
             ->assertDontSee('Upload gambar kefarmasian');

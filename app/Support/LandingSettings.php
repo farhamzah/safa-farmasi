@@ -16,7 +16,7 @@ class LandingSettings
         'hero_title' => 'Farmasi UBP',
         'hero_highlight' => 'Karawang',
         'hero_description' => 'Mewujudkan pendidikan farmasi yang berwawasan kebangsaan, unggul, inovatif, dan berdaya saing global melalui pengembangan pharmapreneurship dan Evidence-Based Medicine.',
-        'hero_image_url' => '/images/hero-farmasi-default.svg',
+        'hero_image_url' => '/images/hero-farmasi-lab.webp',
         'hero_primary_button' => 'Kenali Kami Lebih Lanjut',
         'hero_secondary_button' => 'Program Studi',
         'subheadline' => 'Portal satu halaman untuk layanan digital Fakultas Farmasi UBP Karawang.',
