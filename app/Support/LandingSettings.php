@@ -26,7 +26,7 @@ class LandingSettings
         'value_4_title' => 'Evidence-Based Medicine',
         'services_eyebrow' => 'Layanan Digital',
         'services_title' => 'Pilihan Layanan untuk Kebutuhan Akademik Anda',
-        'services_description' => 'Semua kartu layanan dikelola dari menu Aplikasi di admin SAFA.',
+        'services_description' => 'Akses layanan akademik, administrasi, laboratorium, dan dukungan fakultas dalam satu tempat yang mudah digunakan.',
         'about_eyebrow' => 'Tentang Kami',
         'about_title' => 'Membentuk ekosistem Farmasi UBP yang kredibel',
         'about_description' => 'SAFA UBP membantu civitas akademika mengakses layanan fakultas secara tertib, cepat, dan terdokumentasi melalui satu portal resmi.',

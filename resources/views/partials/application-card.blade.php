@@ -14,24 +14,36 @@
     };
 
     $accentColor = $application->accent_color ?: '#082b5f';
+    $primaryCategory = $application->categories->pluck('name')->first() ?: 'Layanan';
+    $initial = str($application->short_name ?: $application->name)->substr(0, 2)->upper();
 @endphp
 
 <article class="group relative flex min-h-96 flex-col overflow-hidden rounded-2xl border border-sky-100 bg-white shadow-sm transition duration-200 hover:-translate-y-1 hover:border-amber-200 hover:shadow-xl hover:shadow-blue-950/10">
     <div class="h-1.5 w-full" style="background-color: {{ $accentColor }}"></div>
 
-    <div class="relative flex h-36 items-center justify-center overflow-hidden bg-gradient-to-br from-sky-50 to-white">
-        @if ($application->thumbnail_url)
-            <img src="{{ $application->thumbnail_url }}" alt="{{ $application->name }}" class="h-full w-full object-cover transition duration-300 group-hover:scale-105">
-        @else
-            <span class="flex h-20 w-20 items-center justify-center rounded-2xl bg-blue-950 text-2xl font-black text-white shadow-lg shadow-blue-950/20">
-                {{ str($application->short_name ?: $application->name)->substr(0, 2)->upper() }}
-            </span>
-        @endif
+    <div class="relative overflow-hidden bg-gradient-to-br from-sky-50 via-white to-blue-50 p-5">
+        <div class="absolute right-0 top-0 h-24 w-24 rounded-bl-full bg-white/70"></div>
+        <div class="absolute -bottom-10 -right-8 h-28 w-28 rounded-full bg-blue-950/5"></div>
 
-        <div class="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-white/95 to-white/0"></div>
+        <div class="relative flex min-h-24 items-center justify-between gap-4">
+            <span class="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-blue-950 text-xl font-black text-white shadow-lg shadow-blue-950/15">
+                @if ($application->thumbnail_url)
+                    <span class="flex h-full w-full items-center justify-center bg-white p-2">
+                        <img src="{{ $application->thumbnail_url }}" alt="{{ $application->name }}" class="h-full w-full object-contain">
+                    </span>
+                @else
+                    {{ $initial }}
+                @endif
+            </span>
+
+            <div class="min-w-0 text-right">
+                <p class="truncate text-xs font-black uppercase tracking-wide text-blue-900/70">{{ $primaryCategory }}</p>
+                <p class="mt-1 text-sm font-black text-blue-950">{{ $statusMeta['label'] }}</p>
+            </div>
+        </div>
 
         @if ($application->is_featured)
-            <span class="absolute left-4 top-4 rounded-full bg-white px-3 py-1 text-xs font-black text-blue-900 shadow-sm ring-1 ring-amber-200">
+            <span class="absolute bottom-4 left-5 rounded-full bg-white px-3 py-1 text-xs font-black text-blue-900 shadow-sm ring-1 ring-amber-200">
                 Unggulan
             </span>
         @endif

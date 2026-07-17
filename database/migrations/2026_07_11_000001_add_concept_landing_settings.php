@@ -24,7 +24,7 @@ return new class extends Migration
             ['values', 'text', 'value_4_title', 'Evidence-Based Medicine'],
             ['services', 'text', 'services_eyebrow', 'Layanan Digital'],
             ['services', 'text', 'services_title', 'Pilihan Layanan untuk Kebutuhan Akademik Anda'],
-            ['services', 'textarea', 'services_description', 'Semua kartu layanan dikelola dari menu Aplikasi di admin SAFA.'],
+            ['services', 'textarea', 'services_description', 'Akses layanan akademik, administrasi, laboratorium, dan dukungan fakultas dalam satu tempat yang mudah digunakan.'],
             ['about', 'text', 'about_eyebrow', 'Tentang Kami'],
             ['about', 'text', 'about_title', 'Membentuk ekosistem Farmasi UBP yang kredibel'],
             ['about', 'textarea', 'about_description', 'SAFA UBP membantu civitas akademika mengakses layanan fakultas secara tertib, cepat, dan terdokumentasi melalui satu portal resmi.'],

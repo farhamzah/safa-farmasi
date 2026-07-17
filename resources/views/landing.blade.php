@@ -162,30 +162,47 @@
 
             <div class="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
                 @forelse ($showcase as $application)
-                    <article class="group overflow-hidden rounded-2xl border border-sky-100 bg-white shadow-lg shadow-blue-950/5 transition hover:-translate-y-1 hover:shadow-xl hover:shadow-blue-950/10">
-                        <div class="grid min-h-64 grid-cols-[1fr_auto]">
-                            <div class="p-6">
-                                <span class="flex h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-blue-950 text-xl font-black text-white">
-                                    @if ($application->thumbnail_url)
-                                        <img src="{{ $application->thumbnail_url }}" alt="{{ $application->name }}" class="h-full w-full object-cover">
-                                    @else
-                                        {{ str($application->short_name ?: $application->name)->substr(0, 2)->upper() }}
-                                    @endif
-                                </span>
-                                <h3 class="mt-5 text-2xl font-black text-blue-950">{{ $application->name }}</h3>
-                                <p class="mt-3 line-clamp-3 text-sm leading-6 text-blue-950/70">{{ $application->display_description ?: 'Layanan digital Fakultas Farmasi UBP Karawang.' }}</p>
-                                @if ($application->is_linkable)
-                                    <a href="{{ route('applications.go', $application) }}" target="_blank" rel="noopener noreferrer" class="mt-5 inline-flex items-center gap-3 rounded-full border border-blue-950 px-5 py-2 text-sm font-black text-blue-950 transition hover:bg-blue-950 hover:text-white" aria-label="Buka {{ $application->name }}">
-                                        {{ $application->display_button_label }}
-                                        <span>-></span>
-                                    </a>
+                    @php
+                        $serviceCategory = $application->categories->pluck('name')->first() ?: 'Layanan';
+                        $serviceInitial = str($application->short_name ?: $application->name)->substr(0, 2)->upper();
+                        $tone = match ($loop->index % 3) {
+                            1 => ['bg' => 'from-cyan-50 to-white', 'icon' => 'bg-cyan-600', 'line' => 'bg-cyan-500'],
+                            2 => ['bg' => 'from-amber-50 to-white', 'icon' => 'bg-amber-500', 'line' => 'bg-amber-400'],
+                            default => ['bg' => 'from-blue-50 to-white', 'icon' => 'bg-blue-950', 'line' => 'bg-blue-900'],
+                        };
+                    @endphp
+                    <article class="group relative flex min-h-80 flex-col overflow-hidden rounded-2xl border border-sky-100 bg-gradient-to-br {{ $tone['bg'] }} p-6 shadow-lg shadow-blue-950/5 transition duration-200 hover:-translate-y-1 hover:border-amber-200 hover:shadow-xl hover:shadow-blue-950/10">
+                        <div class="absolute right-0 top-0 h-28 w-28 rounded-bl-full bg-white/65"></div>
+                        <div class="absolute bottom-0 right-0 h-24 w-24 translate-x-8 translate-y-8 rounded-full bg-blue-950/5"></div>
+
+                        <div class="relative flex items-start justify-between gap-4">
+                            <span class="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl text-xl font-black text-white shadow-lg shadow-blue-950/12 {{ $tone['icon'] }}">
+                                @if ($application->thumbnail_url)
+                                    <span class="flex h-full w-full items-center justify-center bg-white p-2">
+                                        <img src="{{ $application->thumbnail_url }}" alt="{{ $application->name }}" class="h-full w-full object-contain">
+                                    </span>
                                 @else
-                                    <span class="mt-5 inline-flex rounded-full bg-slate-100 px-5 py-2 text-sm font-black text-slate-500">{{ $application->status === 'maintenance' ? 'Maintenance' : 'Segera Hadir' }}</span>
+                                    {{ $serviceInitial }}
                                 @endif
-                            </div>
-                            <div class="hidden w-28 items-end bg-gradient-to-b from-sky-50 to-sky-100 md:flex">
-                                <div class="h-32 w-full bg-[linear-gradient(135deg,transparent_35%,rgba(8,43,95,0.12)_35%,rgba(8,43,95,0.12)_55%,transparent_55%)]"></div>
-                            </div>
+                            </span>
+                            <span class="rounded-full bg-white/85 px-3 py-1 text-xs font-black text-blue-950 ring-1 ring-sky-100">{{ $serviceCategory }}</span>
+                        </div>
+
+                        <div class="relative mt-7">
+                            <div class="h-1 w-12 rounded-full {{ $tone['line'] }}"></div>
+                            <h3 class="mt-4 text-2xl font-black leading-tight text-blue-950">{{ $application->name }}</h3>
+                            <p class="mt-3 line-clamp-3 text-sm leading-6 text-blue-950/70">{{ $application->display_description ?: 'Layanan digital Fakultas Farmasi UBP Karawang.' }}</p>
+                        </div>
+
+                        <div class="relative mt-auto pt-6">
+                            @if ($application->is_linkable)
+                                <a href="{{ route('applications.go', $application) }}" target="_blank" rel="noopener noreferrer" class="inline-flex min-h-11 items-center justify-center gap-3 rounded-full bg-blue-950 px-5 text-sm font-black text-white shadow-lg shadow-blue-950/10 transition hover:bg-blue-900" aria-label="Buka {{ $application->name }}">
+                                    {{ $application->display_button_label }}
+                                    <span class="flex h-7 w-7 items-center justify-center rounded-full bg-white text-blue-950">-></span>
+                                </a>
+                            @else
+                                <span class="inline-flex min-h-11 items-center rounded-full bg-white/85 px-5 text-sm font-black text-slate-500 ring-1 ring-sky-100">{{ $application->status === 'maintenance' ? 'Maintenance' : 'Segera Hadir' }}</span>
+                            @endif
                         </div>
                     </article>
                 @empty
